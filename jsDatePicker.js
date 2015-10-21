@@ -558,7 +558,7 @@ jsDatePicker.prototype.bindInput = function() {
 jsDatePicker.prototype.prepareInputValue = function(value) {
 
 	var _ 		= this,
-		splitedAll = value.split(' '),
+		splitedAll = value.split(' - '),
 		splitedDate = splitedAll[0].split('/'),
 		change 	= false;
 
