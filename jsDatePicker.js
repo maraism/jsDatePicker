@@ -9,8 +9,7 @@
 function jsDatePicker(options) {
 
 	this.options = {
-		defaultMonthLabels 	: ['January', 'February', 'March', 'April','May', 'June', 'July', 'August', 'September','October', 'November', 'December'],
-		defaultDayLabels  	: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+		lang 				: 'EN',
 		currentDate 		: null,
 		monthLabels 		: [],
 		dayLabels 			: [],
@@ -40,6 +39,17 @@ function jsDatePicker(options) {
 	return this;
 }
 
+jsDatePicker.prototype.I18N = {
+	'EN' : {
+		monthLabels : ['January', 'February', 'March', 'April','May', 'June', 'July', 'August', 'September','October', 'November', 'December'],
+		dayLabels  	: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+	},
+	'FR' : {
+		monthLabels : ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+		dayLabels 	: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
+	}
+};
+
 jsDatePicker.prototype.init = function(options) {
 
 	var _ = this;
@@ -64,11 +74,12 @@ jsDatePicker.prototype.init = function(options) {
 	}
 
 	if (_.options.monthLabels.length == 0) {
-		_.options.monthLabels = _.options.defaultMonthLabels;
+		//_.options.monthLabels = _.options.defaultMonthLabels;
+		_.options.monthLabels = _.I18N[_.options.lang].monthLabels;
 	}
 
 	if (_.options.dayLabels.length == 0) {
-		_.options.dayLabels = _.options.defaultDayLabels;
+		_.options.dayLabels = _.I18N[_.options.lang].dayLabels;
 	}
 
 	if (_.options.container.nodeName == 'INPUT') {
@@ -543,4 +554,3 @@ jsDatePicker.prototype.remove = function() {
 	_.options.dtContainer.remove();
 	_.options.dtContainer = null;
 }
-
