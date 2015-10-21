@@ -76,7 +76,7 @@ jsDatePicker.prototype.init = function(options) {
 	}
 	
 	if (_.useTime() === true) {
-		_.options.container.setAttribute('maxlength', 16);
+		_.options.container.setAttribute('maxlength', 18);
 		if (!_.options.currentHour){
 			_.options.currentHour = _.options.currentDate.getHours();
 			if (parseInt(_.options.currentHour) < 10){
