@@ -87,25 +87,65 @@
 	.dt-today:hover{
 		background-color: #3A539B;
 	}
+	.dt-time-container{
+		border-top: 1px solid white;
+    	padding: 10px 0;
+	}
+	.dt-time-hour,
+	.dt-time-minutes{
+		display: inline-block;
+		width: 40px;
+		height: 20px;
+		border:none;
+		text-align: center;
+		background-color: #89C4F4;
+		color: #3A539B;
+	}
+	.dt-time-text{
+		display: inline-block;
+		width: 50px;
+		height: 20px;
+		line-height: 20px;
+		padding-left: 5px;
+	}
+	.dt-time-separator{
+		display: inline-block;
+		width: 40px;
+		height: 20px;
+		line-height: 20px;
+		text-align: center;
+		font-weight: bold;
+	}
 
 </style>
 <body>
 
 	<div class="container">
-
-
+		
+		<h2>3 - Simple calendrier sans input</h2>
 		<div id="my-datepicker">
 		</div>
-
 		<br /> <br />
+		
+		<h2>4 - Calendrier</h2>
 		<input type="text" value="" id="inputDatepicker" />
-
 		<br /> <br />
+		
+		<h2>5 - Calendrier pr&eacute;-remplit</h2>
 		<input type="text" value="15/10/2015" id="inputDatepicker2" />
 		<br /><br />
 
 		<div id="my-datepicker-2">
 		</div>
+		<br /><br />
+		
+		<h2>1 - Calendrier avec heure</h2>
+		<input type="text" value="" id="inputTimeDatepicker" />
+		<br /><br />
+
+		<h2>2 - Calendrier pr&eacute;-remplit avec heure</h2>
+		<input type="text" value="15/10/2015 10:15" id="inputTimeDatepicker1" />
+		
 
 	</div>
 
@@ -137,7 +177,17 @@
 		container : document.getElementById('inputDatepicker2'),
 		closeOnSelect : false
 	});
-
+	
+	var myInputDateTimePicket = new jsDatePicker({
+		container : document.getElementById('inputTimeDatepicker'),
+		timepicker: true
+	});
+	
+	var myInputDateTimePicket2 = new jsDatePicker({
+		container : document.getElementById('inputTimeDatepicker1'),
+		timepicker: true
+	});
+	
 </script>
 
 </body>

@@ -15,5 +15,3 @@ jsDatePicker
   -> Note : On peut très bien faire la boucle dans notre script
 - Vérifier que le calendrier ne sort pas de l’écran.
   -> Sur mon iphone, le champs est à droite de la page (50% de largeur) et le calendrier sort de 20px (ce qui rajoute un scroll horizontale).
-- Mettre un dictionnaire ?
-  -> Laisser la possibilité de mettre les texte perso, mais offrir un champ “language” par exemple avec “fr”, “en”, …
