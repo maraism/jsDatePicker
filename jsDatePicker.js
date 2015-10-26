@@ -560,19 +560,24 @@ jsDatePicker.prototype.prepareInputValue = function(value) {
 	var _ 		= this,
 		splitedAll = value.split(' - '),
 		splitedDate = splitedAll[0].split('/'),
-		change 	= false;
+		change 	= false,
+		edit 	= false;
 
 		
   	if (splitedDate.length > 0) {
 
     	// On change le jour
     	if (splitedDate[0] && !isNaN(splitedDate[0])) {
-    		_.options.selectedDay = splitedDate[0];
+    		_.options.selectedDay = (splitedDate[0] != '00' ? splitedDate[0] : new Date().getDate());
     		change = true;
     	}
 
     	// on change le mois
     	if (splitedDate[1] && splitedDate[1] > 0 && splitedDate[1] <= 12 && !isNaN(splitedDate[1])) {
+    		if (splitedDate[1] == '00') {
+    			splitedDate[1] = new Date().getMonth();
+    			edit = true;
+    		}
     		_.options.selectedMonth = splitedDate[1]-1;
     		_.options.currentMonth  = splitedDate[1]-1;
     		change = true;
@@ -580,6 +585,11 @@ jsDatePicker.prototype.prepareInputValue = function(value) {
 
     	// on change l'année
     	if (splitedDate[2] && !isNaN(splitedDate[2])) {
+    		if (splitedDate[2] == '0000'){
+    			var year = new Date().getFullYear();
+    			splitedDate[2] = year;
+    			edit = true;
+    		}
     		_.options.selectedYear 	= splitedDate[2];
     		_.options.currentYear 	= splitedDate[2];
     		change = true;
@@ -617,6 +627,10 @@ jsDatePicker.prototype.prepareInputValue = function(value) {
 			change = true;
 		}	
 		
+    }
+    
+    if (edit) {
+    	_.options.container.value = _.selectedDayToString();
     }
     return change;
 }
