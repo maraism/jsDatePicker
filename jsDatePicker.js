@@ -497,7 +497,7 @@ jsDatePicker.prototype.selectedDayToString = function() {
 
 			
 	if (_.useTime()) {
-		toString += ' '+(_.options.currentHour < 10 ? '0' : '')+ parseInt(_.options.currentHour)+':'+(_.options.currentMinutes < 10 ? '0' : '')+parseInt(_.options.currentMinutes);
+		toString += ' - '+(_.options.currentHour < 10 ? '0' : '')+ parseInt(_.options.currentHour)+':'+(_.options.currentMinutes < 10 ? '0' : '')+parseInt(_.options.currentMinutes);
 	}
 
 	if (_.options.isInput) {
