@@ -1,3 +1,4 @@
+'use strict';
 /*
 *
 *	jsDatePicker
@@ -58,7 +59,7 @@ jsDatePicker.prototype.init = function(options) {
 	var _ = this;
 
 
-	for (key in options) { 
+	for (var key in options) { 
 		if(_.options.hasOwnProperty(key) ) {
 			_.options[key]= options[key]
 		};
@@ -161,7 +162,7 @@ jsDatePicker.prototype.generateHTML = function() {
 
 	var _ 			= this,
 		firstDay 	= new Date(_.getCurrentYear(), _.getCurrentMonth(), 1),
-		startingDay = firstDay.getDay();
+		startingDay = firstDay.getDay(),
 		monthLength = new Date(_.getCurrentYear(), _.getCurrentMonth()+1, 0).getDate(),
 		monthName 	= _.getCurrentMonthLabel();
 
@@ -200,7 +201,7 @@ jsDatePicker.prototype.generateHTML = function() {
 			if (day == todayDay && _.getCurrentMonth() == todayMonth)
 				isToday = true;
 
-			isSelected = false;
+			var isSelected = false;
 			if ( _.getSelectedDay() == day && _.getSelectedMonth() == _.getCurrentMonth() && _.getSelectedYear() == _.getCurrentYear())
 				isSelected = true;
 
@@ -402,8 +403,10 @@ jsDatePicker.prototype.bindDay = function() {
 
 jsDatePicker.prototype.clickOnDay = function(day) {
 	
-	var _ = this;
+	var _ = this,
+		daySelected = null;
 
+	
 	if (_.getSelectedDayContainer()) {
 		daySelected = _.options.dtContainer.querySelectorAll('.dt-selected');
 		for (var i=0; i<daySelected.length; i++)
@@ -480,6 +483,7 @@ jsDatePicker.prototype.selectedDayToString = function() {
 	var _ 			= this,
 		d 			= '',
 		m 			= '',
+		y 			= '',
 		toString 	= '';
 
 	if (_.getSelectedDayContainer() && _.getSelectedDayContainer().getAttribute) {
