@@ -30,7 +30,8 @@ function jsDatePicker(options) {
 		disabledItems 		: {},
 		timepicker 			: false,
 		currentHour 		: null,
-		currentMinutes 		: null
+		currentMinutes 		: null,
+		onChange 			: null
 	};
 
 	this.init(options);
@@ -417,6 +418,10 @@ jsDatePicker.prototype.clickOnDay = function(day) {
 	_.options.selectedDayContainer.className += ' dt-selected';
 		
 	_.selectedDayToString();
+	
+	if (_.options.onChange) {
+		_.options.onChange(this.options.container);
+	}
 
 	if (_.options.closeOnSelect)
 		_.remove();
