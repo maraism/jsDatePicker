@@ -41,7 +41,7 @@ function jsDatePicker(options) {
 		this.generateHTML();
 
 	return this;
-}
+};
 
 jsDatePicker.prototype.I18N = {
 	'EN' : {
@@ -112,7 +112,7 @@ jsDatePicker.prototype.init = function(options) {
 
 
 	return this;
-}
+};
 
 jsDatePicker.prototype.getCurrentDate = function() {
 
@@ -123,40 +123,40 @@ jsDatePicker.prototype.getCurrentDate = function() {
 	}
 
 	return _.options.currentDate
-}
+};
 
 jsDatePicker.prototype.getCurrentYear = function() {
 	return this.options.currentYear;
-}
+};
 
 jsDatePicker.prototype.getCurrentMonth = function() {
 	return this.options.currentMonth;
-}
+};
 
 jsDatePicker.prototype.getCurrentMonthLabel = function() {
 	return this.options.monthLabels[this.getCurrentMonth()];
-}
+};
 
 jsDatePicker.prototype.getDayLabel = function(day) {
 	return this.options.dayLabels[day] ? this.options.dayLabels[day] : '';
 
-}
+};
 
 jsDatePicker.prototype.getSelectedDayContainer = function() {
 	return this.options.selectedDayContainer;
-}
+};
 
 jsDatePicker.prototype.getSelectedDay = function() {
 	return this.options.selectedDay;
-}
+};
 
 jsDatePicker.prototype.getSelectedMonth = function() {
 	return this.options.selectedMonth;
-}
+};
 
 jsDatePicker.prototype.getSelectedYear = function() {
 	return this.options.selectedYear;
-}
+};
 
 jsDatePicker.prototype.generateHTML = function() {
 
@@ -289,7 +289,7 @@ jsDatePicker.prototype.getPosition = function(element) {
 	}
 
 	return [left,top];
-}
+};
 
 jsDatePicker.prototype.bindNextMonth = function() {
 
@@ -302,7 +302,7 @@ jsDatePicker.prototype.bindNextMonth = function() {
 		_.clickOnNextMonth(this);
 
 	}, false);
-}
+};
 
 jsDatePicker.prototype.clickOnNextMonth = function(nextMonth) {
 	
@@ -317,7 +317,7 @@ jsDatePicker.prototype.clickOnNextMonth = function(nextMonth) {
 
 	_.generateHTML();
 
-}
+};
 
 
 jsDatePicker.prototype.bindPreviousMonth = function() {
@@ -332,7 +332,7 @@ jsDatePicker.prototype.bindPreviousMonth = function() {
 		_.clickOnPreviousMonth(this);
 
 	}, false);
-}
+};
 
 jsDatePicker.prototype.clickOnPreviousMonth = function(previousMonth) {
 	
@@ -347,7 +347,7 @@ jsDatePicker.prototype.clickOnPreviousMonth = function(previousMonth) {
 
 	_.generateHTML();
 
-}
+};
 
 jsDatePicker.prototype.bindToday = function() {
 
@@ -361,7 +361,7 @@ jsDatePicker.prototype.bindToday = function() {
 		_.clickOnToday(this);
 
 	}, false);
-}
+};
 
 jsDatePicker.prototype.useTime = function() {
 	return this.options.timepicker;
@@ -382,7 +382,7 @@ jsDatePicker.prototype.clickOnToday = function(previousMonth) {
 
 	_.generateHTML();
 
-}
+};
 
 jsDatePicker.prototype.bindDay = function() {
 
@@ -399,7 +399,7 @@ jsDatePicker.prototype.bindDay = function() {
 		
 	});
 	
-}
+};
 
 jsDatePicker.prototype.clickOnDay = function(day) {
 	
@@ -514,7 +514,7 @@ jsDatePicker.prototype.selectedDayToString = function() {
 	}
 
 	return toString;
-}
+};
 
 jsDatePicker.prototype.bindInput = function() {
 
@@ -562,7 +562,7 @@ jsDatePicker.prototype.bindInput = function() {
 
 	});
 
-}
+};
 
 jsDatePicker.prototype.prepareInputValue = function(value) {
 
@@ -642,7 +642,7 @@ jsDatePicker.prototype.prepareInputValue = function(value) {
     	_.options.container.value = _.selectedDayToString();
     }
     return change;
-}
+};
 
 jsDatePicker.prototype.isDisabledItem = function(dayIndex, dayDate) {
 
@@ -663,7 +663,7 @@ jsDatePicker.prototype.isDisabledItem = function(dayIndex, dayDate) {
 
 
 	return ret;
-}
+};
 
 jsDatePicker.prototype.isDisabledDay = function(day) {
 
@@ -689,7 +689,7 @@ jsDatePicker.prototype.isDisabledDay = function(day) {
 
 	return false;
 
-}
+};
 jsDatePicker.prototype.isDisabledDate = function(date) {
 
 	var _ = this;
@@ -699,7 +699,7 @@ jsDatePicker.prototype.isDisabledDate = function(date) {
 
 	return false;
 
-}
+};
 
 jsDatePicker.prototype.remove = function() {
 
@@ -708,4 +708,4 @@ jsDatePicker.prototype.remove = function() {
 	_.options.isShow = false;
 	_.options.dtContainer.remove();
 	_.options.dtContainer = null;
-}
+};
