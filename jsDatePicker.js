@@ -14,16 +14,27 @@ function jsDatePicker(options) {
 		currentDate 		: null,
 		monthLabels 		: [],
 		dayLabels 			: [],
-		todayLabel 			: 'Today',
+		todayLabel 			: '',
 		container 			: null,
 		dtContainer 		: null,
 		dtContainerId 		: null,
+		dtTableContainer    : null,
+		dtTableHeadContainer: null,
+		dtTableBodyContainer: null,
+		dtTableFootContainer: null,
+		dtPreviousMonth 	: null,
+		dtToday 			: null,
+		dtNextMonth 		: null,
+		dtSelectMonth 		: null,
+		dtSelectYear 		: null,
 		currentMonth 		: null,
 		currentYear			: null,
 		selectedDayContainer: null,
 		selectedDay 		: null, 
 		selectedMonth 		: null,
 		selectedYear 		: null,
+		yearMin 			: 100, // Current -100
+		yearMax 			: 5, // Current +5
 		isInput 			: false,
 		isShow 				: false, // Seulement utilisé pour les input
 		closeOnSelect 		: false,
@@ -37,8 +48,9 @@ function jsDatePicker(options) {
 
 	this.init(options);
 
-	if (!this.options.isInput)
-		this.generateHTML();
+	if (!this.options.isInput) {
+		this.generateStructure();
+	}
 
 	return this;
 };
@@ -46,11 +58,13 @@ function jsDatePicker(options) {
 jsDatePicker.prototype.I18N = {
 	'EN' : {
 		monthLabels : ['January', 'February', 'March', 'April','May', 'June', 'July', 'August', 'September','October', 'November', 'December'],
-		dayLabels  	: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+		dayLabels  	: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+		todayLabel	: 'Today'
 	},
 	'FR' : {
 		monthLabels : ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
-		dayLabels 	: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
+		dayLabels 	: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+		todayLabel	: 'Aujourd\'hui'
 	}
 };
 
@@ -101,6 +115,10 @@ jsDatePicker.prototype.init = function(options) {
 	if (_.options.dayLabels.length == 0) {
 		_.options.dayLabels = _.I18N[_.options.lang].dayLabels;
 	}
+	
+	if (_.options.todayLabel.length == 0) {
+		_.options.todayLabel = _.I18N[_.options.lang].todayLabel;
+	}
 
 	if (_.options.container.nodeName == 'INPUT') {
 		_.options.isInput = true;
@@ -137,6 +155,12 @@ jsDatePicker.prototype.getCurrentMonthLabel = function() {
 	return this.options.monthLabels[this.getCurrentMonth()];
 };
 
+jsDatePicker.prototype.getMonthLabel = function(month) {
+	if (!month)
+		month = 0;
+	return this.options.monthLabels[month];
+};
+
 jsDatePicker.prototype.getDayLabel = function(day) {
 	return this.options.dayLabels[day] ? this.options.dayLabels[day] : '';
 
@@ -158,6 +182,143 @@ jsDatePicker.prototype.getSelectedYear = function() {
 	return this.options.selectedYear;
 };
 
+jsDatePicker.prototype.generateSelectMonth = function() {
+
+	this.options.dtSelectMonth = document.createElement('select');
+	this.options.dtSelectMonth.className += 'dt-select-month';
+	
+	var select = '';
+	for (var i = 0; i < this.options.monthLabels.length; i++) {
+		select += '<option value="'+i+'" '+(i == this.getCurrentMonth() ? 'selected="selected"' : '')+'>'+this.getMonthLabel(i)+'</option>';
+	}
+	
+	this.options.dtSelectMonth.innerHTML = select;
+	this.bindSelectMonth();
+	
+};
+
+jsDatePicker.prototype.changeSelectMonth = function() {
+	this.options.dtSelectMonth.value = this.getCurrentMonth();
+};
+
+jsDatePicker.prototype.generateSelectYear = function() {
+
+	this.options.dtSelectYear = document.createElement('select');
+	this.options.dtSelectYear.className += 'dt-select-year'; 
+	
+	var select = '';
+	for (var i = parseInt(this.getCurrentYear())-this.options.yearMin; i <= parseInt(this.getCurrentYear())+this.options.yearMax; i++) {
+		select += '<option value="'+i+'" '+(i == parseInt(this.getCurrentYear()) ? 'selected="selected"' : '')+'>'+i+'</option>';
+	}
+	
+	this.options.dtSelectYear.innerHTML = select;
+	this.bindSelectYear();
+	
+};
+
+jsDatePicker.prototype.changeSelectYear = function() {
+	this.options.dtSelectYear.value = this.getCurrentYear();
+};
+
+jsDatePicker.prototype.generateStructure = function() {
+	
+	this.options.dtContainer = document.createElement('div');
+	this.options.dtContainerId =  'dt-'+Math.random().toString(36).substr(2, 9);
+	this.options.dtContainer.setAttribute('id', this.options.dtContainerId);
+	this.options.dtContainer.className += ' dt-container';
+	
+	this.options.dtTableContainer = document.createElement('table');
+	this.options.dtTableContainer.className += 'dt-table';
+	
+	this.options.dtTableHeadContainer = document.createElement('thead');
+	this.options.dtTableBodyContainer = document.createElement('tbody');
+	this.options.dtTableFootContainer = document.createElement('tfoot');
+	
+	this.options.dtTableContainer.appendChild(this.options.dtTableHeadContainer);
+	this.options.dtTableContainer.appendChild(this.options.dtTableBodyContainer);
+	this.options.dtTableContainer.appendChild(this.options.dtTableFootContainer);
+	this.options.dtContainer.appendChild(this.options.dtTableContainer);
+	
+	
+	this.generateHeader();
+	this.generateBody();
+	this.generateFooter();
+	
+	if (!this.options.isInput) {
+		this.options.container.innerHTML = '';
+		this.options.container.appendChild(this.options.dtContainer);
+	} else {
+
+		this.options.dtContainer.style.position = 'absolute';
+		
+		var pos = this.getPosition(this.options.container);
+
+		this.options.dtContainer.style.zIndex = '999';
+		this.options.dtContainer.style.left = pos[0]+'px';
+		this.options.dtContainer.style.top = (pos[1]+this.options.container.clientHeight+5)+'px';
+		
+		document.body.appendChild(this.options.dtContainer);
+	}
+	this.bindScroll();
+};
+
+jsDatePicker.prototype.generateHeader = function() {
+	
+	// Previous Month
+	var tr = document.createElement('tr'),
+		th = document.createElement('th');
+		
+	this.options.dtPreviousMonth = document.createElement('div');
+	this.options.dtPreviousMonth.className = 'dt-nav dt-previous-month';
+	this.options.dtPreviousMonth.innerHTML = '<';
+	th.appendChild(this.options.dtPreviousMonth);
+	tr.appendChild(th);
+		
+	// Select Month and Year
+	this.generateSelectMonth();
+	th = document.createElement('th');
+	th.setAttribute('colspan', 5);	
+	th.appendChild(this.options.dtSelectMonth);
+	this.generateSelectYear();
+	th.appendChild(this.options.dtSelectYear);
+	tr.appendChild(th);
+	
+	// Previous Month
+	th = document.createElement('th');
+	this.options.dtNextMonth = document.createElement('div');
+	this.options.dtNextMonth.className = 'dt-nav dt-next-month';
+	this.options.dtNextMonth.innerHTML = '>';
+	th.appendChild(this.options.dtNextMonth);
+	tr.appendChild(th);
+	
+	this.options.dtTableHeadContainer.appendChild(tr);
+	
+	this.bindNextMonth();
+	this.bindPreviousMonth();
+
+};
+
+jsDatePicker.prototype.generateBody = function() {
+	this.generateHTML();
+};
+
+jsDatePicker.prototype.generateFooter = function() {
+	
+	var tr = document.createElement('tr'),
+		td = document.createElement('td');
+		
+	td.setAttribute('colspan', 7);
+	this.options.dtToday = document.createElement('div');
+	this.options.dtToday.className = 'dt-today';
+	this.options.dtToday.innerHTML = this.options.todayLabel;
+	
+	td.appendChild(this.options.dtToday);
+	tr.appendChild(td);
+	this.options.dtTableFootContainer.appendChild(tr);
+	
+	this.bindToday();
+};
+
 jsDatePicker.prototype.generateHTML = function() {
 
 	var _ 			= this,
@@ -165,14 +326,11 @@ jsDatePicker.prototype.generateHTML = function() {
 		startingDay = firstDay.getDay(),
 		monthLength = new Date(_.getCurrentYear(), _.getCurrentMonth()+1, 0).getDate(),
 		monthName 	= _.getCurrentMonthLabel();
+	
+	_.changeSelectMonth();
+	_.changeSelectYear();
 
-
-	var html = '<table class="dt-table">';
-
-	html += '<tr><th><div class="dt-nav dt-previous-month"><</div></th><th colspan="5">';
-	html += monthName+"&nbsp;"+_.getCurrentYear();
-	html += '</th><th><div class="dt-nav dt-next-month">></div></th></tr>';
-	html += '<tr class="dt-header">';
+	var html = '<tr class="dt-header">';
 
 	var today 		= _.getCurrentDate(),
 		todayDay 	= today.getDate(),
@@ -183,8 +341,8 @@ jsDatePicker.prototype.generateHTML = function() {
 		html += '<td class="dt-header-day">';
 		html += _.getDayLabel(i);
 		html += '</td>';
-		}
-		html += '</tr><tr>';
+	}
+	html += '</tr><tr>';
 
 	var day = 1,
 		isDayOfMonth = false;
@@ -233,47 +391,19 @@ jsDatePicker.prototype.generateHTML = function() {
 	if (_.useTime() === true) {
 		html += '<tr><td colspan="7"><div class="dt-time-container"><span class="dt-time-text">Heure : </span><input type="number" value="'+_.options.currentHour+'" class="dt-time-hour" maxlength="2" max="23" min="0"/><span class="dt-time-separator">:</span><input type="number" value="'+_.options.currentMinutes+'" class="dt-time-minutes" maxlength="2" max="59" min="0"/></div></td></tr>';
 	}
-	html += '<tr><td colspan="7"><div class="dt-today">'+_.options.todayLabel+'</div></td></tr></table>';
-	
-	if (!_.options.dtContainer) {
-		_.options.dtContainer = document.createElement('div');
-		_.options.dtContainerId =  'dt-'+Math.random().toString(36).substr(2, 9);
-		_.options.dtContainer.setAttribute('id', _.options.dtContainerId);
-		_.options.dtContainer.className += ' dt-container';
-	}
-	_.options.dtContainer.innerHTML = html;
 	
 	
-
-	if (!_.options.isInput) {
-		_.options.container.innerHTML = '';
-		_.options.container.appendChild(_.options.dtContainer);
-	} else {
-
-
-		_.options.dtContainer.style.position = 'absolute';
-		// _.options.dtContainer.style.left = _.options.container.offsetLeft+'px';
-		// _.options.dtContainer.style.top = (_.options.container.offsetTop+_.options.container.clientHeight+5)+'px';
-		//_.options.container.parentNode.insertBefore(_.options.dtContainer, _.options.container.nextSibling);
-
-		var pos = _.getPosition(_.options.container);
-
-		_.options.dtContainer.style.zIndex = '999';
-		 _.options.dtContainer.style.left = pos[0]+'px';
-		_.options.dtContainer.style.top = (pos[1]+_.options.container.clientHeight+5)+'px';
-		document.body.appendChild(_.options.dtContainer);
-	}
+	_.options.dtTableBodyContainer.innerHTML = html;
+	
+	
 
 	_.bindDay();
 	if (_.useTime() === true) {
 		_.bindTime();
 	}
-	_.bindNextMonth();
-	_.bindPreviousMonth();
-	_.bindToday();
+	
+	
 };
-
-
 
 jsDatePicker.prototype.getPosition = function(element) {
 
@@ -297,10 +427,8 @@ jsDatePicker.prototype.bindNextMonth = function() {
 		nextMonth = _.options.dtContainer.querySelector('.dt-next-month');
 
 	nextMonth.addEventListener('click', function(e) {
-
 		e.preventDefault();
 		_.clickOnNextMonth(this);
-
 	}, false);
 };
 
@@ -315,8 +443,7 @@ jsDatePicker.prototype.clickOnNextMonth = function(nextMonth) {
 		_.options.currentYear++;
 	}
 
-	_.generateHTML();
-
+	_.generateBody();
 };
 
 
@@ -326,11 +453,8 @@ jsDatePicker.prototype.bindPreviousMonth = function() {
 		previousMonth = _.options.dtContainer.querySelector('.dt-previous-month');
 
 	previousMonth.addEventListener('click', function(e) {
-
 		e.preventDefault();
-
 		_.clickOnPreviousMonth(this);
-
 	}, false);
 };
 
@@ -345,21 +469,69 @@ jsDatePicker.prototype.clickOnPreviousMonth = function(previousMonth) {
 		_.options.currentYear--;
 	}
 
-	_.generateHTML();
+	_.generateBody();
 
+};
+
+jsDatePicker.prototype.bindSelectMonth = function() {
+	
+	var _ = this;
+
+	this.options.dtSelectMonth.addEventListener('change', function(e) {
+		e.preventDefault();
+		_.onChangeSelectMonth(this);
+	}, false);
+};
+
+jsDatePicker.prototype.onChangeSelectMonth = function(selectMonth) {
+	this.options.currentMonth = selectMonth.value;
+	this.generateBody();
+};
+
+jsDatePicker.prototype.bindSelectYear = function() {
+	
+	var _ = this;
+
+	this.options.dtSelectYear.addEventListener('change', function(e) {
+		e.preventDefault();
+		_.onChangeSelectYear(this);
+	}, false);
+};
+
+jsDatePicker.prototype.onChangeSelectYear = function(selectYear) {
+	this.options.currentYear = selectYear.value;
+	this.generateBody();
 };
 
 jsDatePicker.prototype.bindToday = function() {
 
-	var _ = this,
-		today = _.options.dtContainer.querySelector('.dt-today');
+	var _ = this
 
-	today.addEventListener('click', function(e) {
-
+	this.options.dtToday.addEventListener('click', function(e) {
 		e.preventDefault();
-
 		_.clickOnToday(this);
+	}, false);
+};
 
+jsDatePicker.prototype.bindScroll = function() {
+
+	var _ = this;
+	
+	
+	_.options.dtTableBodyContainer.addEventListener('mousewheel', function(e) {
+		
+		e.stopImmediatePropagation();
+    	e.preventDefault();
+    	
+		if (e.deltaY > 0) {
+			_.clickOnNextMonth();
+		
+		} else {
+			_.clickOnPreviousMonth();
+		}
+	
+		return false;	
+		
 	}, false);
 };
 
@@ -387,17 +559,17 @@ jsDatePicker.prototype.clickOnToday = function(previousMonth) {
 jsDatePicker.prototype.bindDay = function() {
 
 	var _ = this,
-		days = _.options.dtContainer.querySelectorAll('.dt-day.enabled');
+		days = _.options.dtTableBodyContainer.querySelectorAll('.dt-day.enabled');
 
-	Array.prototype.forEach.call(days, function(elem, index){
-
-		elem.addEventListener('click', function(e){
-			e.preventDefault();
-			e.stopImmediatePropagation();
-			_.clickOnDay(this);
-		}, false)
-		
-	});
+	for (var key in days) {
+		if (days[key].addEventListener) {
+			days[key].addEventListener('click', function(e){
+				e.stopImmediatePropagation();
+				e.preventDefault();
+				_.clickOnDay(this);
+			}, false);
+		}
+	}
 	
 };
 
@@ -406,29 +578,28 @@ jsDatePicker.prototype.clickOnDay = function(day) {
 	var _ = this,
 		daySelected = null;
 
-	
 	if (_.getSelectedDayContainer()) {
-		daySelected = _.options.dtContainer.querySelectorAll('.dt-selected');
-		for (var i=0; i<daySelected.length; i++)
+		daySelected = _.options.dtTableBodyContainer.querySelectorAll('.dt-selected');
+		for (var i=0; i<daySelected.length; i++){
 			daySelected[i].className = daySelected[i].className.replace(' dt-selected', '');
+		}
 	}
-
 	_.options.selectedDayContainer = day;
 	_.options.selectedDay 		= day.getAttribute('data-day');
 	_.options.selectedMonth 	= _.options.currentMonth;
 	_.options.selectedYear 		= _.options.currentYear;
 
 	_.options.selectedDayContainer.className += ' dt-selected';
-		
 	_.selectedDayToString();
 	
 	if (_.options.onChange) {
 		_.options.onChange(this.options.container);
 	}
-
-	if (_.options.closeOnSelect)
+	
+	if (_.options.closeOnSelect) {
 		_.remove();
-
+	}
+	
 };
 
 jsDatePicker.prototype.isNumeric = function(n) {
@@ -523,24 +694,19 @@ jsDatePicker.prototype.bindInput = function() {
 	_.options.container.addEventListener('focus', function() {
 		_.options.isShow = true;
 		_.prepareInputValue(this.value);
-		_.generateHTML();
+		_.generateStructure();
 	}, false);
 
 	_.options.container.addEventListener('blur', function(e) {
 
-		// console.log(e);
-		// if(!_.options.clickOnDiv && _.options.isShow){
-		// 	_.remove();
-		// }
 	});
 
 	_.options.container.addEventListener('keyup', function(e) {
 		
-	
         var value 	= _.options.container.value;
         	
         if (_.prepareInputValue(value))
-            _.generateHTML();
+            _.generateStructure();
                 
 	});
 

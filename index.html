@@ -122,16 +122,16 @@
 
 	<div class="container">
 		
-		<h2>3 - Simple calendrier sans input</h2>
+		<h2>1 - Simple calendrier sans input</h2>
 		<div id="my-datepicker">
 		</div>
 		<br /> <br />
 		
-		<h2>4 - Calendrier</h2>
+		<h2>2 - Calendrier</h2>
 		<input type="text" value="" id="inputDatepicker" />
 		<br /> <br />
 		
-		<h2>5 - Calendrier pr&eacute;-remplit</h2>
+		<h2>3 - Calendrier pr&eacute;-remplit</h2>
 		<input type="text" value="15/10/2015" id="inputDatepicker2" />
 		<br /><br />
 
@@ -139,11 +139,11 @@
 		</div>
 		<br /><br />
 		
-		<h2>1 - Calendrier avec heure</h2>
+		<h2>4 - Calendrier avec heure</h2>
 		<input type="text" value="" id="inputTimeDatepicker" />
 		<br /><br />
 
-		<h2>2 - Calendrier pr&eacute;-remplit avec heure</h2>
+		<h2>5 - Calendrier pr&eacute;-remplit avec heure</h2>
 		<input type="text" value="15/10/2015 10:15" id="inputTimeDatepicker1" />
 		
 
@@ -155,7 +155,8 @@
 	var jsDatePicker1 = new jsDatePicker({
 		container : document.getElementById('my-datepicker'),
 		currentMonth : 10,
-		currentYear : 2015
+		currentYear : 2015,
+		timepicker: true
 	});
 
 	var myInputDatepicker = new jsDatePicker({
