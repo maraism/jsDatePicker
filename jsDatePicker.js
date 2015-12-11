@@ -22,6 +22,7 @@ function jsDatePicker(options) {
 		dtTableHeadContainer: null,
 		dtTableBodyContainer: null,
 		dtTableFootContainer: null,
+		dtHourContainer 	: null,
 		dtPreviousMonth 	: null,
 		dtToday 			: null,
 		dtNextMonth 		: null,
@@ -33,16 +34,18 @@ function jsDatePicker(options) {
 		selectedDay 		: null, 
 		selectedMonth 		: null,
 		selectedYear 		: null,
-		yearMin 			: 100, // Current -100
-		yearMax 			: 5, // Current +5
+		yearMin 			: 100,  // Current -100
+		yearMax 			: 5,  	// Current +5
 		isInput 			: false,
-		isShow 				: false, // Seulement utilisé pour les input
+		isShow 				: false,// Seulement utilisé pour les input
 		closeOnSelect 		: false,
 		clickOnDiv 			: false,
 		disabledItems 		: {},
 		timepicker 			: false,
-		currentHour 		: null,
-		currentMinutes 		: null,
+		useTimeHalf 		: false,
+		useTimeQuarter 		: false,
+		selectedHourContainer: null,
+		selectedHour 		: null,
 		onChange 			: null
 	};
 
@@ -105,6 +108,7 @@ jsDatePicker.prototype.init = function(options) {
 				_.options.currentMinutes = '0'+_.options.currentMinutes;
 			}
 		}
+
 	}
 
 	if (_.options.monthLabels.length == 0) {
@@ -168,6 +172,10 @@ jsDatePicker.prototype.getDayLabel = function(day) {
 
 jsDatePicker.prototype.getSelectedDayContainer = function() {
 	return this.options.selectedDayContainer;
+};
+
+jsDatePicker.prototype.getSelectedHourContainer = function() {
+	return this.options.selectedHourContainer;
 };
 
 jsDatePicker.prototype.getSelectedDay = function() {
@@ -299,7 +307,72 @@ jsDatePicker.prototype.generateHeader = function() {
 };
 
 jsDatePicker.prototype.generateBody = function() {
-	this.generateHTML();
+	
+	var tr = document.createElement('tr');
+	tr.className = 'dt-header';
+	
+	var html = '';
+	for(var i = 0; i <= 6; i++ ){
+		html += '<td class="dt-header-day">';
+		html += this.getDayLabel(i);
+		html += '</td>';
+	}
+	tr.innerHTML = html;
+		
+	if (this.useTime() === true) {
+		
+		this.options.dtHourContainer = document.createElement('td');
+		this.options.dtHourContainer.setAttribute('rowspan', 6);
+		this.options.dtHourContainer.className = 'dt-hour-container';
+	 	html = '<ul>';
+	 	var hourValue = '';
+	 	for (var i = 0; i <= 23; i++) {
+	 		hourValue = (i > 9 ? '' : '0')+i+':00';
+	 		html += '<li class="dt-hour '+(this.options.selectedHour != hourValue ? '' : 'dt-hour-selected')+'" data-value="'+hourValue+'">'+(i > 9 ? '' : '0')+i+':00'+'</li>';
+	 		if (this.options.useTimeQuarter) {
+	 			for (var j = 15; j <= 45; j += 15) {
+	 				hourValue = (i > 9 ? '' : '0')+i+':'+j;
+	 				html += '<li class="dt-hour '+(this.options.selectedHour != hourValue ? '' : 'dt-hour-selected')+'" data-value="'+hourValue+'">'+(i > 9 ? '' : '0')+i+':'+j+'</li>';	
+	 			}
+	 		}else if (this.options.useTimeHalf) {
+	 			hourValue = (i > 9 ? '' : '0')+i+':30';
+	 			html += '<li class="dt-hour '+(this.options.selectedHour != hourValue ? '' : 'dt-hour-selected')+'" data-value="'+hourValue+'">'+(i > 9 ? '' : '0')+i+':30'+'</li>';
+	 		}
+	 	}
+	 	html += '</ul>';
+	 	
+	 	this.options.dtHourContainer.innerHTML = html;
+	 	
+	 	tr.appendChild(this.options.dtHourContainer);
+	}
+	
+	
+	this.options.dtTableBodyContainer.appendChild(tr);
+	
+	if (this.useTime() === true) {
+		this.initTimePosition();
+		this.bindTime();
+	}
+	
+	this.generateDayHTML();
+};
+
+jsDatePicker.prototype.initTimePosition = function() {
+	
+	if (this.options.selectedHour) {
+		
+		var elem = this.options.dtHourContainer.querySelector('li[data-value="'+this.options.selectedHour+'"]');
+		if (elem) {
+			
+			// console.log(elem.offsetTop);
+			// console.log(elem.scrollTop);
+			// this.options.dtHourContainer.scrollTop += 150;
+			// console.log(this.options.dtHourContainer.scrollTop);
+			// var pos = this.getPosition(elem);
+			// console.log(pos);
+			// console.log(elem);
+		}
+	}
 };
 
 jsDatePicker.prototype.generateFooter = function() {
@@ -319,7 +392,7 @@ jsDatePicker.prototype.generateFooter = function() {
 	this.bindToday();
 };
 
-jsDatePicker.prototype.generateHTML = function() {
+jsDatePicker.prototype.generateDayHTML = function() {
 
 	var _ 			= this,
 		firstDay 	= new Date(_.getCurrentYear(), _.getCurrentMonth(), 1),
@@ -330,24 +403,27 @@ jsDatePicker.prototype.generateHTML = function() {
 	_.changeSelectMonth();
 	_.changeSelectYear();
 
-	var html = '<tr class="dt-header">';
-
 	var today 		= _.getCurrentDate(),
 		todayDay 	= today.getDate(),
 		todayMonth 	= today.getMonth(),
-		isToday 	= false;
-
-	for(var i = 0; i <= 6; i++ ){
-		html += '<td class="dt-header-day">';
-		html += _.getDayLabel(i);
-		html += '</td>';
+		isToday 	= false,
+		day = 1,
+		isDayOfMonth = false,
+		tr = null,
+		td = null;
+		
+	
+	var dtTrDay = _.options.dtTableBodyContainer.querySelectorAll('.dt-tr-day');
+	if (dtTrDay) {
+		for (var i = 0; i < dtTrDay.length; i++) {
+			dtTrDay[i].remove();
+		}
 	}
-	html += '</tr><tr>';
-
-	var day = 1,
-		isDayOfMonth = false;
 	// Ligne
 	for (var i = 0; i < 9; i++) {
+		
+		tr = document.createElement('tr');
+		tr.className = 'dt-tr-day';
 		// Colonne
 	    for (var j = 0; j <= 6; j++) { 
 
@@ -366,43 +442,30 @@ jsDatePicker.prototype.generateHTML = function() {
 			isDayOfMonth = false;
 			if (day <= monthLength && (i > 0 || j >= startingDay))
 				isDayOfMonth = true;
-
-			var tdDay = '<td class="'+enabled+' '+(isDayOfMonth ? 'dt-day' : '')+' '+(isToday ? 'dt-current' : '')+' '+(isSelected ? 'dt-selected' : '')+'" data-day="'+day+'">';
+			
+			td = document.createElement('td');
+			
+			td.className = enabled+' '+(isDayOfMonth ? 'dt-day' : '')+' '+(isToday ? 'dt-current' : '')+' '+(isSelected ? 'dt-selected' : '');
+			td.setAttribute('data-day', day);
 			if (isDayOfMonth) {
-	        	tdDay += '<span>'+day+'</span>';
+	        	td.innerHTML = '<span>'+day+'</span>';
 	        	day++;
 	      	}
-	      	tdDay += '</td>';
 
 	      	if (isSelected)
-	      		_.options.selectedDayContainer = tdDay;
+	      		_.options.selectedDayContainer = td;
 	     
-	      	html += tdDay;
+	      	tr.appendChild(td);
 	    }
 	    if (day > monthLength) {
 	      	break;
-	    } else {
-	      	html += '</tr><tr>';
 	    }
+	    
+	    _.options.dtTableBodyContainer.appendChild(tr);
 	}
 	
-	html += '</tr>';
-	
-	if (_.useTime() === true) {
-		html += '<tr><td colspan="7"><div class="dt-time-container"><span class="dt-time-text">Heure : </span><input type="number" value="'+_.options.currentHour+'" class="dt-time-hour" maxlength="2" max="23" min="0"/><span class="dt-time-separator">:</span><input type="number" value="'+_.options.currentMinutes+'" class="dt-time-minutes" maxlength="2" max="59" min="0"/></div></td></tr>';
-	}
-	
-	
-	_.options.dtTableBodyContainer.innerHTML = html;
-	
-	
-
 	_.bindDay();
-	if (_.useTime() === true) {
-		_.bindTime();
-	}
-	
-	
+
 };
 
 jsDatePicker.prototype.getPosition = function(element) {
@@ -443,7 +506,7 @@ jsDatePicker.prototype.clickOnNextMonth = function(nextMonth) {
 		_.options.currentYear++;
 	}
 
-	_.generateBody();
+	_.generateDayHTML();
 };
 
 
@@ -469,7 +532,7 @@ jsDatePicker.prototype.clickOnPreviousMonth = function(previousMonth) {
 		_.options.currentYear--;
 	}
 
-	_.generateBody();
+	_.generateDayHTML();
 
 };
 
@@ -485,7 +548,7 @@ jsDatePicker.prototype.bindSelectMonth = function() {
 
 jsDatePicker.prototype.onChangeSelectMonth = function(selectMonth) {
 	this.options.currentMonth = selectMonth.value;
-	this.generateBody();
+	this.generateDayHTML();
 };
 
 jsDatePicker.prototype.bindSelectYear = function() {
@@ -500,7 +563,7 @@ jsDatePicker.prototype.bindSelectYear = function() {
 
 jsDatePicker.prototype.onChangeSelectYear = function(selectYear) {
 	this.options.currentYear = selectYear.value;
-	this.generateBody();
+	this.generateDayHTML();
 };
 
 jsDatePicker.prototype.bindToday = function() {
@@ -517,10 +580,18 @@ jsDatePicker.prototype.bindScroll = function() {
 
 	var _ = this;
 	
-	
 	_.options.dtTableBodyContainer.addEventListener('mousewheel', function(e) {
-		
-		e.stopImmediatePropagation();
+    	
+    	var target = e.target;
+    	
+    	while( target){
+    		if (target.nodeName == 'TBODY')
+    			break;
+			if( target.className.indexOf('dt-hour-container') >= 0)
+				return;
+			target = target.parentNode;
+		}
+    	e.stopImmediatePropagation();
     	e.preventDefault();
     	
 		if (e.deltaY > 0) {
@@ -552,7 +623,7 @@ jsDatePicker.prototype.clickOnToday = function(previousMonth) {
 		_.options.currentMinutes 	= date.getMinutes();
 	}
 
-	_.generateHTML();
+	_.generateDayHTML();
 
 };
 
@@ -561,9 +632,9 @@ jsDatePicker.prototype.bindDay = function() {
 	var _ = this,
 		days = _.options.dtTableBodyContainer.querySelectorAll('.dt-day.enabled');
 
-	for (var key in days) {
-		if (days[key].addEventListener) {
-			days[key].addEventListener('click', function(e){
+	for (var i = 0; i < days.length; i++) {
+		if (days[i].addEventListener) {
+			days[i].addEventListener('click', function(e){
 				e.stopImmediatePropagation();
 				e.preventDefault();
 				_.clickOnDay(this);
@@ -596,7 +667,7 @@ jsDatePicker.prototype.clickOnDay = function(day) {
 		_.options.onChange(this.options.container);
 	}
 	
-	if (_.options.closeOnSelect) {
+	if (_.options.closeOnSelect && !_.useTime()) {
 		_.remove();
 	}
 	
@@ -606,47 +677,49 @@ jsDatePicker.prototype.isNumeric = function(n) {
 	return !isNaN(parseFloat(n)) && isFinite(n); 
 };
 
+jsDatePicker.prototype.clickOnHour = function(hour) {
+	
+	var _ 				= this,
+		hourSelected 	= null;
+
+	if (_.getSelectedHourContainer()) {
+		hourSelected = _.options.dtTableBodyContainer.querySelectorAll('.dt-hour-selected');
+		for (var i=0; i<hourSelected.length; i++){
+			hourSelected[i].className = hourSelected[i].className.replace(' dt-hour-selected', '');
+		}
+	}
+	
+	_.options.selectedHourContainer = hour;
+	_.options.selectedHourContainer.className += ' dt-hour-selected';
+	
+	_.options.currentHour  		= _.options.selectedHourContainer.getAttribute('data-value').split(':')[0];
+	_.options.currentMinutes  	= _.options.selectedHourContainer.getAttribute('data-value').split(':')[1];
+	_.options.selectedHour 		= _.options.selectedHourContainer.getAttribute('data-value');
+	
+	
+	_.selectedDayToString();
+	
+	if (_.options.onChange) {
+		_.options.onChange(this.options.container);
+	}
+	
+	if (_.options.closeOnSelect) {
+		_.remove();
+	}
+};
+
 jsDatePicker.prototype.bindTime = function() {
 	
 	var _ = this,
-		inputHour = _.options.dtContainer.querySelector('.dt-time-hour'),
-		inputMinutes = _.options.dtContainer.querySelector('.dt-time-minutes');
+		hours = _.options.dtTableBodyContainer.querySelectorAll('.dt-hour');
+		
+	for (var i = 0; i < hours.length; i++) {
+		hours[i].addEventListener('click', function(e) {
+			e.preventDefault();
+			_.clickOnHour(this);
+		}, false);
+	}
 	
-	inputHour.addEventListener('keyup', function(e) {
-		
-		if (!_.isNumeric(this.value) && this.value.length > 0){
-			this.value = new Date().getHours();
-		}
-		
-		if (parseInt(this.value) > 23)
-			this.value = 23;
-		else if (parseInt(this.value) < 0) {
-			this.value = 0;
-		}
-		
-		if (this.value.length > 0) {
-			_.options.currentHour = this.value;
-			_.selectedDayToString();
-		}
-	});
-	
-	inputMinutes.addEventListener('keyup', function(e) {
-		
-		if (!_.isNumeric(this.value) && this.value.length > 0){
-			this.value = new Date().getMinutes();
-		}
-		
-		if (parseInt(this.value) > 59)
-			this.value = 59;
-		else if (parseInt(this.value) < 0) {
-			this.value = 0;
-		}
-		
-		if (this.value.length > 0) {
-			_.options.currentMinutes = this.value;
-			_.selectedDayToString();
-		}
-	});
 };
 
 jsDatePicker.prototype.selectedDayToString = function() {
@@ -677,7 +750,7 @@ jsDatePicker.prototype.selectedDayToString = function() {
 
 			
 	if (_.useTime()) {
-		toString += ' - '+(_.options.currentHour < 10 ? '0' : '')+ parseInt(_.options.currentHour)+':'+(_.options.currentMinutes < 10 ? '0' : '')+parseInt(_.options.currentMinutes);
+		toString += ' - '+_.options.selectedHour;
 	}
 
 	if (_.options.isInput) {
@@ -792,6 +865,7 @@ jsDatePicker.prototype.prepareInputValue = function(value) {
 			}
 			
 			change = true;
+			
 		}    
 
 		if (isNaN(_.options.currentHour) || isNaN(_.options.currentMinutes)) {
@@ -801,6 +875,8 @@ jsDatePicker.prototype.prepareInputValue = function(value) {
 			_.options.currentMinutes = d.getMinutes();
 			change = true;
 		}	
+		
+		_.options.selectedHour = _.options.currentHour+':'+_.options.currentMinutes;
 		
     }
     

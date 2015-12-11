@@ -116,6 +116,45 @@
 		text-align: center;
 		font-weight: bold;
 	}
+	
+	.dt-hour-container{
+		padding-left: 10px;
+		text-align: center;
+		
+	}
+	.dt-hour-container ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		max-height: 140px;
+		overflow: hidden;
+		overflow-y:scroll;
+		border:1px solid #89C4F4;
+		position: relative;
+	}
+	
+	.dt-hour-container ul li {
+		display: block;
+		width: 50px;
+		text-align: center;
+		min-height: 25px;
+		line-height: 25px;
+		cursor: pointer;
+		border-bottom:1px solid #89C4F4;
+		color: white;
+		transition:color .4s, background-color .4s;
+		position: relative;
+	}
+	.dt-hour-container ul li:hover{
+		color: #3A539B;
+	}
+	.dt-hour-container ul li:hover{
+		color: #3A539B;
+	}
+	.dt-hour-container ul li.dt-hour-selected{
+		background-color: #89C4F4;
+		color: #3A539B;
+	}
 
 </style>
 <body>
@@ -144,7 +183,7 @@
 		<br /><br />
 
 		<h2>5 - Calendrier pr&eacute;-remplit avec heure</h2>
-		<input type="text" value="15/10/2015 10:15" id="inputTimeDatepicker1" />
+		<input type="text" value="15/10/2015 - 10:15" id="inputTimeDatepicker1" />
 		
 
 	</div>
@@ -156,7 +195,9 @@
 		container : document.getElementById('my-datepicker'),
 		currentMonth : 10,
 		currentYear : 2015,
-		timepicker: true
+		timepicker: true,
+		useTimeHalf : true,
+		useTimeQuarter : true
 	});
 
 	var myInputDatepicker = new jsDatePicker({
@@ -181,12 +222,14 @@
 	
 	var myInputDateTimePicket = new jsDatePicker({
 		container : document.getElementById('inputTimeDatepicker'),
-		timepicker: true
+		timepicker: true,
+		closeOnSelect : true
 	});
 	
 	var myInputDateTimePicket2 = new jsDatePicker({
 		container : document.getElementById('inputTimeDatepicker1'),
-		timepicker: true
+		timepicker: true,
+		useTimeQuarter : true
 	});
 	
 </script>
