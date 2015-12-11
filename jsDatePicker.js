@@ -363,14 +363,27 @@ jsDatePicker.prototype.initTimePosition = function() {
 		
 		var elem = this.options.dtHourContainer.querySelector('li[data-value="'+this.options.selectedHour+'"]');
 		if (elem) {
-			
-			// console.log(elem.offsetTop);
-			// console.log(elem.scrollTop);
-			// this.options.dtHourContainer.scrollTop += 150;
-			// console.log(this.options.dtHourContainer.scrollTop);
-			// var pos = this.getPosition(elem);
-			// console.log(pos);
-			// console.log(elem);
+			var _ = this;
+			setTimeout(function(){
+				_.options.dtHourContainer.querySelector('ul').scrollTop = elem.offsetTop;
+			},1);
+		}
+	}
+};
+
+jsDatePicker.prototype.setTimeSelected = function() {
+	
+	var selected = this.options.dtHourContainer.querySelectorAll('li.dt-hour-selected');
+	for (var i = 0; i < selected.length; i++) {
+		selected[i].className = selected[i].className.replace(' dt-hour-selected', '');
+	}
+	
+	if (this.options.selectedHour) {
+		
+		var elem = this.options.dtHourContainer.querySelector('li[data-value="'+this.options.selectedHour+'"]');
+		if (elem) {
+			elem.className += ' dt-hour-selected';
+			this.initTimePosition();
 		}
 	}
 };
@@ -682,13 +695,11 @@ jsDatePicker.prototype.clickOnHour = function(hour) {
 	var _ 				= this,
 		hourSelected 	= null;
 
-	if (_.getSelectedHourContainer()) {
-		hourSelected = _.options.dtTableBodyContainer.querySelectorAll('.dt-hour-selected');
-		for (var i=0; i<hourSelected.length; i++){
-			hourSelected[i].className = hourSelected[i].className.replace(' dt-hour-selected', '');
-		}
-	}
 	
+	hourSelected = _.options.dtHourContainer.querySelectorAll('.dt-hour-selected');
+	for (var i=0; i<hourSelected.length; i++){
+		hourSelected[i].className = hourSelected[i].className.replace(' dt-hour-selected', '');
+	}
 	_.options.selectedHourContainer = hour;
 	_.options.selectedHourContainer.className += ' dt-hour-selected';
 	
@@ -778,8 +789,17 @@ jsDatePicker.prototype.bindInput = function() {
 		
         var value 	= _.options.container.value;
         	
-        if (_.prepareInputValue(value))
-            _.generateStructure();
+        if (_.prepareInputValue(value)){
+        	if (!_.options.dtContainer){
+            	_.generateStructure();
+        	} else {
+        		_.generateDayHTML();
+        		if (_.useTime()) {
+        			_.setTimeSelected();
+        		}
+        	}
+            
+        }
                 
 	});
 
