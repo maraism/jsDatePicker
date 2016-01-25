@@ -206,7 +206,7 @@ jsDatePicker.prototype.generateSelectMonth = function() {
 };
 
 jsDatePicker.prototype.changeSelectMonth = function() {
-	this.options.dtSelectMonth.value = this.getCurrentMonth();
+	this.options.dtSelectMonth.value = parseInt(this.getCurrentMonth());
 };
 
 jsDatePicker.prototype.generateSelectYear = function() {
@@ -560,7 +560,7 @@ jsDatePicker.prototype.bindSelectMonth = function() {
 };
 
 jsDatePicker.prototype.onChangeSelectMonth = function(selectMonth) {
-	this.options.currentMonth = selectMonth.value;
+	this.options.currentMonth = parseInt(selectMonth.value);
 	this.generateDayHTML();
 };
 
@@ -670,7 +670,7 @@ jsDatePicker.prototype.clickOnDay = function(day) {
 	}
 	_.options.selectedDayContainer = day;
 	_.options.selectedDay 		= day.getAttribute('data-day');
-	_.options.selectedMonth 	= _.options.currentMonth;
+	_.options.selectedMonth 	= parseInt(_.options.currentMonth);
 	_.options.selectedYear 		= _.options.currentYear;
 
 	_.options.selectedDayContainer.className += ' dt-selected';
@@ -847,7 +847,7 @@ jsDatePicker.prototype.prepareInputValue = function(value) {
     			edit = true;
     		}
     		_.options.selectedMonth = splitedDate[1]-1;
-    		_.options.currentMonth  = splitedDate[1]-1;
+    		_.options.currentMonth  = parseInt(splitedDate[1])-1;
     		change = true;
     	}
 
