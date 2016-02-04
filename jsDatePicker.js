@@ -42,6 +42,8 @@ function jsDatePicker(options) {
 		clickOnDiv 			: false,
 		disabledItems 		: {},
 		timepicker 			: false,
+		minHour 			: 0,
+		maxHour 			: 23,
 		useTimeHalf 		: false,
 		useTimeQuarter 		: false,
 		selectedHourContainer: null,
@@ -326,7 +328,7 @@ jsDatePicker.prototype.generateBody = function() {
 		this.options.dtHourContainer.className = 'dt-hour-container';
 	 	html = '<ul>';
 	 	var hourValue = '';
-	 	for (var i = 0; i <= 23; i++) {
+	 	for (var i = this.options.minHour; i <= this.options.maxHour; i++) {
 	 		hourValue = (i > 9 ? '' : '0')+i+':00';
 	 		html += '<li class="dt-hour '+(this.options.selectedHour != hourValue ? '' : 'dt-hour-selected')+'" data-value="'+hourValue+'">'+(i > 9 ? '' : '0')+i+':00'+'</li>';
 	 		if (this.options.useTimeQuarter) {
