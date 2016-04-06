@@ -233,6 +233,11 @@ jsDatePicker.prototype.changeSelectYear = function() {
 
 jsDatePicker.prototype.generateStructure = function() {
 	
+	var old = document.getElementById(this.options.dtContainerId);
+	if (old) {
+		old.remove();
+	}
+	
 	this.options.dtContainer = document.createElement('div');
 	this.options.dtContainerId =  'dt-'+Math.random().toString(36).substr(2, 9);
 	this.options.dtContainer.setAttribute('id', this.options.dtContainerId);
