@@ -484,11 +484,11 @@ jsDatePicker.prototype.generateDayHTML = function() {
 	     
 	      	tr.appendChild(td);
 	    }
+	    _.options.dtTableBodyContainer.appendChild(tr);
+	    
 	    if (day > monthLength) {
 	      	break;
 	    }
-	    
-	    _.options.dtTableBodyContainer.appendChild(tr);
 	}
 	
 	_.bindDay();
