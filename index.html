@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>jsDatePicker</title>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+</head>
+
+<style>
+	.container{
+		width: 980px; 
+		margin:0 auto;
+	}
+
+	.dt-current{
+		color: #89C4F4;
+	}
+
+	.dt-selected{
+		background-color: #89C4F4;
+		color: #3A539B;
+	}
+
+	.dt-container{
+		background: #4B77BE;
+		display: inline-block;
+		color: white;
+		font-family: 'Open Sans','Arial', sans-serif;
+		font-size: 12px;
+
+		/* Supprime le highligth sur la selection*/
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-moz-user-select: none;   
+		-ms-user-select: none;    
+		-o-user-select: none;
+		user-select: none; 
+	}
+
+	.dt-container.hidden{
+		display: none;
+	}
+
+	.dt-table{
+		border-collapse: collapse;
+	}
+
+	.dt-table th{
+		font-weight: normal;
+	}
+
+	.dt-header-day{
+		text-align: center;
+	}
+
+	.dt-day{
+		text-align: center;
+		cursor: pointer;
+		width: 30px;
+		height: 30px;
+		transition:color 0.4s, background-color 0.4s;
+	}
+	.dt-day.enabled:hover{
+		color: #3A539B;
+	}
+	.dt-day.disabled{
+		cursor: default;
+		background-color: #bdc3c7;
+	}
+
+	.dt-nav{
+		cursor: pointer;
+		height: 30px;
+		width: 30px;
+		line-height: 30px;
+	}
+
+	.dt-today{
+		width: 100%;
+		height: 30px;
+		line-height: 30px;
+		text-align: center;
+		background-color: #89C4F4;
+		cursor: pointer;
+		transition:background-color 0.4s;
+	}
+
+	.dt-today:hover{
+		background-color: #3A539B;
+	}
+	.dt-time-container{
+		border-top: 1px solid white;
+    	padding: 10px 0;
+	}
+	.dt-time-hour,
+	.dt-time-minutes{
+		display: inline-block;
+		width: 40px;
+		height: 20px;
+		border:none;
+		text-align: center;
+		background-color: #89C4F4;
+		color: #3A539B;
+	}
+	.dt-time-text{
+		display: inline-block;
+		width: 50px;
+		height: 20px;
+		line-height: 20px;
+		padding-left: 5px;
+	}
+	.dt-time-separator{
+		display: inline-block;
+		width: 40px;
+		height: 20px;
+		line-height: 20px;
+		text-align: center;
+		font-weight: bold;
+	}
+	
+	.dt-hour-container{
+		padding-left: 10px;
+		text-align: center;
+		
+	}
+	.dt-hour-container ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		max-height: 140px;
+		overflow: hidden;
+		overflow-y:scroll;
+		border:1px solid #89C4F4;
+		position: relative;
+	}
+	
+	.dt-hour-container ul li {
+		display: block;
+		width: 50px;
+		text-align: center;
+		min-height: 25px;
+		line-height: 25px;
+		cursor: pointer;
+		border-bottom:1px solid #89C4F4;
+		color: white;
+		transition:color .4s, background-color .4s;
+		position: relative;
+	}
+	.dt-hour-container ul li:hover{
+		color: #3A539B;
+	}
+	.dt-hour-container ul li:hover{
+		color: #3A539B;
+	}
+	.dt-hour-container ul li.dt-hour-selected{
+		background-color: #89C4F4;
+		color: #3A539B;
+	}
+
+</style>
+<body>
+
+	<div class="container">
+		
+		<h2>1 - Simple calendrier sans input</h2>
+		<div id="my-datepicker">
+		</div>
+		<br /> <br />
+		
+		<h2>2 - Calendrier</h2>
+		<input type="text" value="" id="inputDatepicker" />
+		<br /> <br />
+		
+		<h2>3 - Calendrier pr&eacute;-remplit</h2>
+		<input type="text" value="15/10/2015" id="inputDatepicker2" />
+		<br /><br />
+
+		<div id="my-datepicker-2">
+		</div>
+		<br /><br />
+		
+		<h2>4 - Calendrier avec heure</h2>
+		<input type="text" value="" id="inputTimeDatepicker" />
+		<br /><br />
+
+		<h2>5 - Calendrier pr&eacute;-remplit avec heure</h2>
+		<input type="text" value="15/10/2015 - 10:15" id="inputTimeDatepicker1" />
+		
+
+	</div>
+
+<script src="jsDatePicker.js"></script>
+<script>
+	
+	var jsDatePicker1 = new jsDatePicker({
+		container : document.getElementById('my-datepicker'),
+		currentMonth : 10,
+		currentYear : 2015,
+		timepicker: true,
+		useTimeHalf : true,
+		useTimeQuarter : true
+	});
+
+	var myInputDatepicker = new jsDatePicker({
+		container : document.getElementById('inputDatepicker'),
+		closeOnSelect : true
+	});
+
+	var jsDatePicker2 = new jsDatePicker({
+		container 	: document.getElementById('my-datepicker-2'),
+		todayLabel 	: 'Ajourd\'hui',
+		lang 		: 'FR',
+		disabledItems : {
+			days 	: ['tuesday', 'saturday'], 
+			dates 	: ['18/09/2014', '20/11/2014']
+		}
+	});
+
+	var myInputDatepicker2 = new jsDatePicker({
+		container : document.getElementById('inputDatepicker2'),
+		closeOnSelect : false
+	});
+	
+	var myInputDateTimePicket = new jsDatePicker({
+		container : document.getElementById('inputTimeDatepicker'),
+		timepicker: true,
+		closeOnSelect : true
+	});
+	
+	var myInputDateTimePicket2 = new jsDatePicker({
+		container : document.getElementById('inputTimeDatepicker1'),
+		timepicker: true,
+		useTimeQuarter : true
+	});
+	
+</script>
+
+</body>
+</html>
