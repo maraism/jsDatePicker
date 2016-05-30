@@ -322,8 +322,14 @@ jsDatePicker.prototype.generateBody = function() {
 	
 	var html = '';
 	for(i = 0; i <= 6; i++ ){
+		var d = 0;
+		if (i < 6) {
+			d=i+1;
+		} else {
+			d = 0;
+		}
 		html += '<td class="dt-header-day">';
-		html += this.getDayLabel(i);
+		html += this.getDayLabel(d);
 		html += '</td>';
 	}
 	tr.innerHTML = html;
@@ -449,8 +455,11 @@ jsDatePicker.prototype.generateDayHTML = function() {
 		// Colonne
 	    for (var j = 0; j <= 6; j++) { 
 
+	    	var realDayIndex = j,
+	    		dayIndex 	 = j+1;
+
 	    	var enabled = 'enabled';
-	    	if (_.isDisabledItem(j, day)) {
+	    	if (_.isDisabledItem(dayIndex, day)) {
 	    		enabled = 'disabled';
 	    	}
 
@@ -465,10 +474,10 @@ jsDatePicker.prototype.generateDayHTML = function() {
 			}
 
 			isDayOfMonth = false;
-			if (day <= monthLength && (i > 0 || j >= startingDay)) {
+			if (day <= monthLength && (i > 0 || (startingDay != 0 && dayIndex >= startingDay) || (startingDay == 0 && realDayIndex == 6) )) {
 				isDayOfMonth = true;
 			}
-			
+
 			td = document.createElement('td');
 			
 			td.className = enabled+' '+(isDayOfMonth ? 'dt-day' : '')+' '+(isToday ? 'dt-current' : '')+' '+(isSelected ? 'dt-selected' : '');
