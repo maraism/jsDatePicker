@@ -810,7 +810,9 @@ jsDatePicker.prototype.bindInput = function() {
 	}, false);
 
 	_.options.container.addEventListener('blur', function() {
-
+		if (_.options.onChange) {
+			_.options.onChange(_.options.container);
+		}
 	});
 
 	_.options.container.addEventListener('keyup', function() {
