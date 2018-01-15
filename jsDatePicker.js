@@ -1,13 +1,13 @@
 'use strict';
 /*
 *
-*	jsDatePicker
+*	JsDatePicker
 *
 *	Author : Maxime Marais
 *
 */
 
-function jsDatePicker(options) {
+function JsDatePicker(options) {
 
 	this.options = {
 		lang 				: 'EN',
@@ -60,7 +60,7 @@ function jsDatePicker(options) {
 	return this;
 }
 
-jsDatePicker.prototype.I18N = {
+JsDatePicker.prototype.I18N = {
 	'EN' : {
 		monthLabels : ['January', 'February', 'March', 'April','May', 'June', 'July', 'August', 'September','October', 'November', 'December'],
 		dayLabels  	: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
@@ -73,7 +73,7 @@ jsDatePicker.prototype.I18N = {
 	}
 };
 
-jsDatePicker.prototype.init = function(options) {
+JsDatePicker.prototype.init = function(options) {
 
 	var _ = this;
 
@@ -138,7 +138,7 @@ jsDatePicker.prototype.init = function(options) {
 	return this;
 };
 
-jsDatePicker.prototype.getCurrentDate = function() {
+JsDatePicker.prototype.getCurrentDate = function() {
 
 	var _ = this;
 
@@ -149,51 +149,51 @@ jsDatePicker.prototype.getCurrentDate = function() {
 	return _.options.currentDate;
 };
 
-jsDatePicker.prototype.getCurrentYear = function() {
+JsDatePicker.prototype.getCurrentYear = function() {
 	return parseInt(this.options.currentYear);
 };
 
-jsDatePicker.prototype.getCurrentMonth = function() {
+JsDatePicker.prototype.getCurrentMonth = function() {
 	return parseInt(this.options.currentMonth);
 };
 
-jsDatePicker.prototype.getCurrentMonthLabel = function() {
+JsDatePicker.prototype.getCurrentMonthLabel = function() {
 	return this.options.monthLabels[this.getCurrentMonth()];
 };
 
-jsDatePicker.prototype.getMonthLabel = function(month) {
+JsDatePicker.prototype.getMonthLabel = function(month) {
 	if (!month){
 		month = 0;
 	}
 	return this.options.monthLabels[month];
 };
 
-jsDatePicker.prototype.getDayLabel = function(day) {
+JsDatePicker.prototype.getDayLabel = function(day) {
 	return this.options.dayLabels[day] ? this.options.dayLabels[day] : '';
 
 };
 
-jsDatePicker.prototype.getSelectedDayContainer = function() {
+JsDatePicker.prototype.getSelectedDayContainer = function() {
 	return this.options.selectedDayContainer;
 };
 
-jsDatePicker.prototype.getSelectedHourContainer = function() {
+JsDatePicker.prototype.getSelectedHourContainer = function() {
 	return this.options.selectedHourContainer;
 };
 
-jsDatePicker.prototype.getSelectedDay = function() {
+JsDatePicker.prototype.getSelectedDay = function() {
 	return parseInt(this.options.selectedDay);
 };
 
-jsDatePicker.prototype.getSelectedMonth = function() {
+JsDatePicker.prototype.getSelectedMonth = function() {
 	return parseInt(this.options.selectedMonth);
 };
 
-jsDatePicker.prototype.getSelectedYear = function() {
+JsDatePicker.prototype.getSelectedYear = function() {
 	return this.options.selectedYear;
 };
 
-jsDatePicker.prototype.generateSelectMonth = function() {
+JsDatePicker.prototype.generateSelectMonth = function() {
 
 	this.options.dtSelectMonth = document.createElement('select');
 	this.options.dtSelectMonth.className += 'dt-select-month';
@@ -208,11 +208,11 @@ jsDatePicker.prototype.generateSelectMonth = function() {
 
 };
 
-jsDatePicker.prototype.changeSelectMonth = function() {
+JsDatePicker.prototype.changeSelectMonth = function() {
 	this.options.dtSelectMonth.value = parseInt(this.getCurrentMonth());
 };
 
-jsDatePicker.prototype.generateSelectYear = function() {
+JsDatePicker.prototype.generateSelectYear = function() {
 
 	this.options.dtSelectYear = document.createElement('select');
 	this.options.dtSelectYear.className += 'dt-select-year';
@@ -227,11 +227,11 @@ jsDatePicker.prototype.generateSelectYear = function() {
 
 };
 
-jsDatePicker.prototype.changeSelectYear = function() {
+JsDatePicker.prototype.changeSelectYear = function() {
 	this.options.dtSelectYear.value = this.getCurrentYear();
 };
 
-jsDatePicker.prototype.generateStructure = function() {
+JsDatePicker.prototype.generateStructure = function() {
 
 	var old = document.getElementById(this.options.dtContainerId);
 	if (old) {
@@ -278,7 +278,7 @@ jsDatePicker.prototype.generateStructure = function() {
 	this.bindScroll();
 };
 
-jsDatePicker.prototype.generateHeader = function() {
+JsDatePicker.prototype.generateHeader = function() {
 
 	// Previous Month
 	var tr = document.createElement('tr'),
@@ -314,7 +314,7 @@ jsDatePicker.prototype.generateHeader = function() {
 
 };
 
-jsDatePicker.prototype.generateBody = function() {
+JsDatePicker.prototype.generateBody = function() {
 
 	var tr = document.createElement('tr'),
 		i;
@@ -372,7 +372,7 @@ jsDatePicker.prototype.generateBody = function() {
 	this.generateDayHTML();
 };
 
-jsDatePicker.prototype.initTimePosition = function() {
+JsDatePicker.prototype.initTimePosition = function() {
 
 	if (this.options.selectedHour) {
 
@@ -386,7 +386,7 @@ jsDatePicker.prototype.initTimePosition = function() {
 	}
 };
 
-jsDatePicker.prototype.setTimeSelected = function() {
+JsDatePicker.prototype.setTimeSelected = function() {
 
 	var selected = this.options.dtHourContainer.querySelectorAll('li.dt-hour-selected');
 	for (var i = 0; i < selected.length; i++) {
@@ -403,7 +403,7 @@ jsDatePicker.prototype.setTimeSelected = function() {
 	}
 };
 
-jsDatePicker.prototype.generateFooter = function() {
+JsDatePicker.prototype.generateFooter = function() {
 
 	var tr = document.createElement('tr'),
 		td = document.createElement('td');
@@ -420,7 +420,7 @@ jsDatePicker.prototype.generateFooter = function() {
 	this.bindToday();
 };
 
-jsDatePicker.prototype.generateDayHTML = function() {
+JsDatePicker.prototype.generateDayHTML = function() {
 
 	var _ 			= this,
 		firstDay 	= new Date(_.getCurrentYear(), _.getCurrentMonth(), 1),
@@ -504,7 +504,7 @@ jsDatePicker.prototype.generateDayHTML = function() {
 
 };
 
-jsDatePicker.prototype.getPosition = function(element) {
+JsDatePicker.prototype.getPosition = function(element) {
 
 	var left 	= 0,
 		top 	= 0,
@@ -519,7 +519,7 @@ jsDatePicker.prototype.getPosition = function(element) {
 	return [left,top];
 };
 
-jsDatePicker.prototype.bindNextMonth = function() {
+JsDatePicker.prototype.bindNextMonth = function() {
 
 	var _ = this,
 		nextMonth = _.options.dtContainer.querySelector('.dt-next-month');
@@ -530,7 +530,7 @@ jsDatePicker.prototype.bindNextMonth = function() {
 	}, false);
 };
 
-jsDatePicker.prototype.clickOnNextMonth = function() {
+JsDatePicker.prototype.clickOnNextMonth = function() {
 
 	var _ = this;
 
@@ -545,7 +545,7 @@ jsDatePicker.prototype.clickOnNextMonth = function() {
 };
 
 
-jsDatePicker.prototype.bindPreviousMonth = function() {
+JsDatePicker.prototype.bindPreviousMonth = function() {
 
 	var _ = this,
 		previousMonth = _.options.dtContainer.querySelector('.dt-previous-month');
@@ -556,7 +556,7 @@ jsDatePicker.prototype.bindPreviousMonth = function() {
 	}, false);
 };
 
-jsDatePicker.prototype.clickOnPreviousMonth = function() {
+JsDatePicker.prototype.clickOnPreviousMonth = function() {
 
 	var _ = this;
 
@@ -571,7 +571,7 @@ jsDatePicker.prototype.clickOnPreviousMonth = function() {
 
 };
 
-jsDatePicker.prototype.bindSelectMonth = function() {
+JsDatePicker.prototype.bindSelectMonth = function() {
 
 	var _ = this;
 
@@ -581,12 +581,12 @@ jsDatePicker.prototype.bindSelectMonth = function() {
 	}, false);
 };
 
-jsDatePicker.prototype.onChangeSelectMonth = function(selectMonth) {
+JsDatePicker.prototype.onChangeSelectMonth = function(selectMonth) {
 	this.options.currentMonth = parseInt(selectMonth.value);
 	this.generateDayHTML();
 };
 
-jsDatePicker.prototype.bindSelectYear = function() {
+JsDatePicker.prototype.bindSelectYear = function() {
 
 	var _ = this;
 
@@ -596,12 +596,12 @@ jsDatePicker.prototype.bindSelectYear = function() {
 	}, false);
 };
 
-jsDatePicker.prototype.onChangeSelectYear = function(selectYear) {
+JsDatePicker.prototype.onChangeSelectYear = function(selectYear) {
 	this.options.currentYear = selectYear.value;
 	this.generateDayHTML();
 };
 
-jsDatePicker.prototype.bindToday = function() {
+JsDatePicker.prototype.bindToday = function() {
 
 	var _ = this;
 
@@ -611,7 +611,7 @@ jsDatePicker.prototype.bindToday = function() {
 	}, false);
 };
 
-jsDatePicker.prototype.bindScroll = function() {
+JsDatePicker.prototype.bindScroll = function() {
 
 	var _ = this;
 
@@ -643,11 +643,11 @@ jsDatePicker.prototype.bindScroll = function() {
 	}, false);
 };
 
-jsDatePicker.prototype.useTime = function() {
+JsDatePicker.prototype.useTime = function() {
 	return this.options.timepicker;
 };
 
-jsDatePicker.prototype.clickOnToday = function() {
+JsDatePicker.prototype.clickOnToday = function() {
 
 	var _ = this,
 		date = new Date();
@@ -664,7 +664,7 @@ jsDatePicker.prototype.clickOnToday = function() {
 
 };
 
-jsDatePicker.prototype.bindDay = function() {
+JsDatePicker.prototype.bindDay = function() {
 
 	var _ = this,
 		days = _.options.dtTableBodyContainer.querySelectorAll('.dt-day.enabled'),
@@ -682,7 +682,7 @@ jsDatePicker.prototype.bindDay = function() {
 
 };
 
-jsDatePicker.prototype.clickOnDay = function(day) {
+JsDatePicker.prototype.clickOnDay = function(day) {
 
 	var _ = this,
 		daySelected = null;
@@ -711,11 +711,11 @@ jsDatePicker.prototype.clickOnDay = function(day) {
 
 };
 
-jsDatePicker.prototype.isNumeric = function(n) {
+JsDatePicker.prototype.isNumeric = function(n) {
 	return !isNaN(parseFloat(n)) && isFinite(n);
 };
 
-jsDatePicker.prototype.clickOnHour = function(hour) {
+JsDatePicker.prototype.clickOnHour = function(hour) {
 
 	var _ 				= this,
 		hourSelected 	= null;
@@ -744,7 +744,7 @@ jsDatePicker.prototype.clickOnHour = function(hour) {
 	}
 };
 
-jsDatePicker.prototype.bindTime = function() {
+JsDatePicker.prototype.bindTime = function() {
 
 	var _ = this,
 		hours = _.options.dtTableBodyContainer.querySelectorAll('.dt-hour'),
@@ -759,7 +759,7 @@ jsDatePicker.prototype.bindTime = function() {
 
 };
 
-jsDatePicker.prototype.selectedDayToString = function() {
+JsDatePicker.prototype.selectedDayToString = function() {
 
 	var _ 			= this,
 		d 			= '',
@@ -799,7 +799,7 @@ jsDatePicker.prototype.selectedDayToString = function() {
 	return toString;
 };
 
-jsDatePicker.prototype.bindInput = function() {
+JsDatePicker.prototype.bindInput = function() {
 
 	var _ = this;
 
@@ -854,7 +854,7 @@ jsDatePicker.prototype.bindInput = function() {
 
 };
 
-jsDatePicker.prototype.prepareInputValue = function(value) {
+JsDatePicker.prototype.prepareInputValue = function(value) {
 
 	var _ 		= this,
 		splitedAll = value.split(' - '),
@@ -937,7 +937,7 @@ jsDatePicker.prototype.prepareInputValue = function(value) {
     return change;
 };
 
-jsDatePicker.prototype.isDisabledItem = function(dayIndex, dayDate) {
+JsDatePicker.prototype.isDisabledItem = function(dayIndex, dayDate) {
 
 	var _ 	= this,
 		ret = false;
@@ -958,7 +958,7 @@ jsDatePicker.prototype.isDisabledItem = function(dayIndex, dayDate) {
 	return ret;
 };
 
-jsDatePicker.prototype.isDisabledDay = function(day) {
+JsDatePicker.prototype.isDisabledDay = function(day) {
 
 	var _ = this;
 
@@ -985,7 +985,7 @@ jsDatePicker.prototype.isDisabledDay = function(day) {
 	return false;
 
 };
-jsDatePicker.prototype.isDisabledDate = function(date) {
+JsDatePicker.prototype.isDisabledDate = function(date) {
 
 	var _ = this;
 
@@ -997,7 +997,7 @@ jsDatePicker.prototype.isDisabledDate = function(date) {
 
 };
 
-jsDatePicker.prototype.remove = function() {
+JsDatePicker.prototype.remove = function() {
 
 	var _ = this;
 
