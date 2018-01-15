@@ -232,7 +232,6 @@ JsDatePicker.prototype.changeSelectYear = function() {
 };
 
 JsDatePicker.prototype.generateStructure = function() {
-
 	var old = document.getElementById(this.options.dtContainerId);
 	if (old) {
 		old.remove();
@@ -279,7 +278,6 @@ JsDatePicker.prototype.generateStructure = function() {
 };
 
 JsDatePicker.prototype.generateHeader = function() {
-
 	// Previous Month
 	var tr = document.createElement('tr'),
 		th = document.createElement('th');
@@ -315,7 +313,6 @@ JsDatePicker.prototype.generateHeader = function() {
 };
 
 JsDatePicker.prototype.generateBody = function() {
-
 	var tr = document.createElement('tr'),
 		i;
 	tr.className = 'dt-header';
@@ -373,7 +370,6 @@ JsDatePicker.prototype.generateBody = function() {
 };
 
 JsDatePicker.prototype.initTimePosition = function() {
-
 	if (this.options.selectedHour) {
 
 		var elem = this.options.dtHourContainer.querySelector('li[data-value="'+this.options.selectedHour+'"]');
@@ -404,7 +400,6 @@ JsDatePicker.prototype.setTimeSelected = function() {
 };
 
 JsDatePicker.prototype.generateFooter = function() {
-
 	var tr = document.createElement('tr'),
 		td = document.createElement('td');
 
@@ -572,7 +567,6 @@ JsDatePicker.prototype.clickOnPreviousMonth = function() {
 };
 
 JsDatePicker.prototype.bindSelectMonth = function() {
-
 	var _ = this;
 
 	this.options.dtSelectMonth.addEventListener('change', function(e) {
@@ -587,7 +581,6 @@ JsDatePicker.prototype.onChangeSelectMonth = function(selectMonth) {
 };
 
 JsDatePicker.prototype.bindSelectYear = function() {
-
 	var _ = this;
 
 	this.options.dtSelectYear.addEventListener('change', function(e) {
@@ -647,8 +640,8 @@ JsDatePicker.prototype.useTime = function() {
 	return this.options.timepicker;
 };
 
-JsDatePicker.prototype.clickOnToday = function() {
 
+JsDatePicker.prototype.clickOnToday = function() {
 	var _ = this,
 		date = new Date();
 
@@ -683,7 +676,6 @@ JsDatePicker.prototype.bindDay = function() {
 };
 
 JsDatePicker.prototype.clickOnDay = function(day) {
-
 	var _ = this,
 		daySelected = null;
 
@@ -716,7 +708,6 @@ JsDatePicker.prototype.isNumeric = function(n) {
 };
 
 JsDatePicker.prototype.clickOnHour = function(hour) {
-
 	var _ 				= this,
 		hourSelected 	= null;
 
@@ -745,7 +736,6 @@ JsDatePicker.prototype.clickOnHour = function(hour) {
 };
 
 JsDatePicker.prototype.bindTime = function() {
-
 	var _ = this,
 		hours = _.options.dtTableBodyContainer.querySelectorAll('.dt-hour'),
 		clickHour = function(e) {
