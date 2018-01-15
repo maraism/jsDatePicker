@@ -150,7 +150,7 @@ JsDatePicker.prototype.getCurrentDate = function() {
 };
 
 JsDatePicker.prototype.getCurrentYear = function() {
-	return parseInt(this.options.currentYear);
+	return parseInt(this.options.currentYear, 10);
 };
 
 JsDatePicker.prototype.getCurrentMonth = function() {
@@ -190,7 +190,7 @@ JsDatePicker.prototype.getSelectedMonth = function() {
 };
 
 JsDatePicker.prototype.getSelectedYear = function() {
-	return this.options.selectedYear;
+	return parseInt(this.options.selectedYear, 10);
 };
 
 JsDatePicker.prototype.generateSelectMonth = function() {
@@ -464,6 +464,7 @@ JsDatePicker.prototype.generateDayHTML = function() {
 			}
 
 			var isSelected = false;
+
 			if ( _.getSelectedDay() === day && _.getSelectedMonth() === _.getCurrentMonth() && _.getSelectedYear() === _.getCurrentYear()) {
 				isSelected = true;
 			}
