@@ -341,15 +341,18 @@ JsDatePicker.prototype.generateBody = function() {
 	 	for (i = this.options.minHour; i <= this.options.maxHour; i++) {
 	 		hourValue = (i > 9 ? '' : '0')+i+':00';
 	 		html += '<li class="dt-hour '+(this.options.selectedHour !== hourValue ? '' : 'dt-hour-selected')+'" data-value="'+hourValue+'">'+(i > 9 ? '' : '0')+i+':00'+'</li>';
-	 		if (this.options.useTimeQuarter) {
-	 			for (var j = 15; j <= 45; j += 15) {
-	 				hourValue = (i > 9 ? '' : '0')+i+':'+j;
-	 				html += '<li class="dt-hour '+(this.options.selectedHour !== hourValue ? '' : 'dt-hour-selected')+'" data-value="'+hourValue+'">'+(i > 9 ? '' : '0')+i+':'+j+'</li>';
-	 			}
-	 		}else if (this.options.useTimeHalf) {
-	 			hourValue = (i > 9 ? '' : '0')+i+':30';
-	 			html += '<li class="dt-hour '+(this.options.selectedHour !== hourValue ? '' : 'dt-hour-selected')+'" data-value="'+hourValue+'">'+(i > 9 ? '' : '0')+i+':30'+'</li>';
-	 		}
+
+			if (i < this.options.maxHour) {
+		 		if (this.options.useTimeQuarter) {
+		 			for (var j = 15; j <= 45; j += 15) {
+		 				hourValue = (i > 9 ? '' : '0')+i+':'+j;
+		 				html += '<li class="dt-hour '+(this.options.selectedHour !== hourValue ? '' : 'dt-hour-selected')+'" data-value="'+hourValue+'">'+(i > 9 ? '' : '0')+i+':'+j+'</li>';
+		 			}
+		 		}else if (this.options.useTimeHalf) {
+		 			hourValue = (i > 9 ? '' : '0')+i+':30';
+		 			html += '<li class="dt-hour '+(this.options.selectedHour !== hourValue ? '' : 'dt-hour-selected')+'" data-value="'+hourValue+'">'+(i > 9 ? '' : '0')+i+':30'+'</li>';
+		 		}
+			}
 	 	}
 	 	html += '</ul>';
 
