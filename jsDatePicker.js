@@ -34,8 +34,8 @@ function JsDatePicker(options) {
 		selectedDay 		: null,
 		selectedMonth 		: null,
 		selectedYear 		: null,
-		yearMin 			: 100,  // Current -100
-		yearMax 			: 5,  	// Current +5
+		yearMin 			: new Date().getFullYear(),  // Current -100
+		yearMax 			: new Date().getFullYear()+5,  	// Current +5
 		isInput 			: false,
 		isShow 				: false,// Seulement utilisé pour les input
 		closeOnSelect 		: false,
@@ -218,7 +218,7 @@ JsDatePicker.prototype.generateSelectYear = function() {
 	this.options.dtSelectYear.className += 'dt-select-year';
 
 	var select = '';
-	for (var i = parseInt(this.getCurrentYear())-this.options.yearMin; i <= parseInt(this.getCurrentYear())+this.options.yearMax; i++) {
+	for (var i = parseInt(this.options.yearMin); i <= parseInt(this.options.yearMax); i++) {
 		select += '<option value="'+i+'" '+(i === parseInt(this.getCurrentYear()) ? 'selected="selected"' : '')+'>'+i+'</option>';
 	}
 
