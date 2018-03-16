@@ -41,6 +41,7 @@ function JsDatePicker(options) {
 		closeOnSelect 		: false,
 		clickOnDiv 			: false,
 		disabledItems 		: {},
+    disablePastDay : false,
 		timepicker 			: false,
 		minHour 			: 0,
 		maxHour 			: 23,
@@ -476,6 +477,10 @@ JsDatePicker.prototype.generateDayHTML = function() {
 			if (day <= monthLength && (i > 0 || (startingDay != 0 && dayIndex >= startingDay) || (startingDay == 0 && realDayIndex == 6) )) {
 				isDayOfMonth = true;
 			}
+
+      if (_.options.disablePastDay === true && new Date(_.getCurrentYear(), _.getCurrentMonth(), day, 23, 59, 59).getTime() < new Date().getTime(null, null, null, 0, 0, 0)) {
+        enabled = 'disabled';
+      }
 
 			td = document.createElement('td');
 
