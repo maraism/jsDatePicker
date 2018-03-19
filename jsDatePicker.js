@@ -36,6 +36,8 @@ function JsDatePicker(options) {
 		selectedYear 		: null,
 		yearMin 			: new Date().getFullYear(),  // Current -100
 		yearMax 			: new Date().getFullYear()+5,  	// Current +5
+    min           : null,
+    max           : null,
 		isInput 			: false,
 		isShow 				: false,// Seulement utilisé pour les input
 		closeOnSelect 		: false,
@@ -200,11 +202,60 @@ JsDatePicker.prototype.generateSelectMonth = function() {
 	this.options.dtSelectMonth.className += 'dt-select-month';
 
 	var select = '';
-	for (var i = 0; i < this.options.monthLabels.length; i++) {
+  var minMonth = 0;
+  var maxMonth = this.options.monthLabels.length;
+  
+  if (this.options.min) {
+    if (this.options.min.getFullYear() === this.options.max.getFullYear()) {
+      minMonth = this.options.min.getMonth();
+    } else {
+      if (this.getCurrentYear() === this.options.min.getFullYear()) {
+        minMonth = this.options.min.getMonth();
+      } else {
+        minMonth = 0;
+      }
+    }
+  }
+  
+  if (this.options.max) {
+    // On est sur la même année
+    if (this.options.min.getFullYear() === this.options.max.getFullYear()) {
+      maxMonth = this.options.max.getMonth()+1;
+    } else {
+      // On est sur est pas sur l'année max
+      if (this.getCurrentYear() < this.options.max.getFullYear()) {
+        maxMonth = 12;
+      } else {
+        maxMonth = this.options.max.getMonth()+1;
+      }
+    }
+   
+  }
+  
+  if (this.getCurrentMonth() < minMonth) {
+    this.options.currentMonth = minMonth;
+  }
+  
+  if (this.getCurrentMonth() > maxMonth) {
+    this.options.currentMonth = maxMonth;
+  }
+  
+  
+	for (var i = minMonth; i < maxMonth; i++) {
 		select += '<option value="'+i+'" '+(i === this.getCurrentMonth() ? 'selected="selected"' : '')+'>'+this.getMonthLabel(i)+'</option>';
 	}
 
 	this.options.dtSelectMonth.innerHTML = select;
+  
+  if (this.options.spanSelectMonth) {
+    this.options.spanSelectMonth.innerHTML = '';
+  } else {
+    this.options.spanSelectMonth = document.createElement('span');
+  }
+  
+  this.options.spanSelectMonth.className = 'dt-ctnr-select-month';
+  this.options.spanSelectMonth.appendChild(this.options.dtSelectMonth);
+  
 	this.bindSelectMonth();
 
 };
@@ -217,6 +268,14 @@ JsDatePicker.prototype.generateSelectYear = function() {
 
 	this.options.dtSelectYear = document.createElement('select');
 	this.options.dtSelectYear.className += 'dt-select-year';
+  
+  if (this.options.min) {
+    this.options.yearMin = this.options.min.getFullYear();
+  }
+  
+  if (this.options.max) {
+    this.options.yearMax = this.options.max.getFullYear();
+  }
 
 	var select = '';
 	for (var i = parseInt(this.options.yearMin); i <= parseInt(this.options.yearMax); i++) {
@@ -224,12 +283,23 @@ JsDatePicker.prototype.generateSelectYear = function() {
 	}
 
 	this.options.dtSelectYear.innerHTML = select;
+
+  if (this.options.spanSelectYear) {
+    this.options.spanSelectYear.innerHTML = '';
+  } else {
+    this.options.spanSelectYear = document.createElement('span');
+  }
+  
+  this.options.spanSelectYear.className = 'dt-ctnr-select-year';
+  this.options.spanSelectYear.appendChild(this.options.dtSelectYear);
+  
 	this.bindSelectYear();
 
 };
 
 JsDatePicker.prototype.changeSelectYear = function() {
 	this.options.dtSelectYear.value = this.getCurrentYear();
+  this.generateSelectMonth();
 };
 
 JsDatePicker.prototype.generateStructure = function() {
@@ -293,10 +363,11 @@ JsDatePicker.prototype.generateHeader = function() {
 	this.generateSelectMonth();
 	th = document.createElement('th');
 	th.setAttribute('colspan', 5);
-	th.appendChild(this.options.dtSelectMonth);
-	this.generateSelectYear();
-	th.appendChild(this.options.dtSelectYear);
-	tr.appendChild(th);
+  this.generateSelectYear();
+	th.appendChild(this.options.spanSelectYear);
+	th.appendChild(this.options.spanSelectMonth);
+  tr.appendChild(th);
+	
 
 	// Previous Month
 	th = document.createElement('th');
@@ -477,11 +548,11 @@ JsDatePicker.prototype.generateDayHTML = function() {
 			if (day <= monthLength && (i > 0 || (startingDay != 0 && dayIndex >= startingDay) || (startingDay == 0 && realDayIndex == 6) )) {
 				isDayOfMonth = true;
 			}
-
+     
       if (_.options.disablePastDay === true && new Date(_.getCurrentYear(), _.getCurrentMonth(), day, 23, 59, 59).getTime() < new Date().getTime(null, null, null, 0, 0, 0)) {
         enabled = 'disabled';
       }
-
+     
 			td = document.createElement('td');
 
 			td.className = enabled+' '+(isDayOfMonth ? 'dt-day' : '')+' '+(isToday ? 'dt-current' : '')+' '+(isSelected ? 'dt-selected' : '');
@@ -537,6 +608,24 @@ JsDatePicker.prototype.bindNextMonth = function() {
 JsDatePicker.prototype.clickOnNextMonth = function() {
 
 	var _ = this;
+  
+  var minMonth = 0;
+  var minYear = this.options.yearMin;
+  if (this.options.min) {
+    minMonth = this.options.min.getMonth();
+    minYear = this.options.min.getFullYear();
+  }
+  
+  var maxMonth = 11;
+  var maxYear = this.options.yearMax;
+  if (this.options.max) {
+    maxMonth = this.options.max.getMonth();
+    maxYear = this.options.max.getFullYear();
+  }
+  
+  if (_.getCurrentMonth() >= maxMonth && _.options.currentYear >= maxYear) {
+    return;
+  }
 
 	if (_.getCurrentMonth() < 11) {
 		_.options.currentMonth++;
@@ -564,7 +653,25 @@ JsDatePicker.prototype.clickOnPreviousMonth = function() {
 
 	var _ = this;
 
-	if (_.getCurrentMonth() > 0) {
+  var minMonth = 0;
+  var minYear = this.options.yearMin;
+  if (this.options.min) {
+    minMonth = this.options.min.getMonth();
+    minYear = this.options.min.getFullYear();
+  }
+  
+  var maxMonth = 11;
+  var maxYear = this.options.yearMax;
+  if (this.options.max) {
+    maxMonth = this.options.max.getMonth();
+    maxYear = this.options.max.getFullYear();
+  }
+  
+  if (_.getCurrentMonth() <= minMonth && _.options.currentYear <= minYear) {
+    return;
+  }
+  
+	if (_.getCurrentMonth() > minMonth) {
 		_.options.currentMonth--;
 	} else {
 		_.options.currentMonth = 11;
@@ -788,7 +895,7 @@ JsDatePicker.prototype.selectedDayToString = function() {
 
 
 	if (_.useTime()) {
-		toString += ' - '+_.options.selectedHour;
+		toString += ' '+_.options.selectedHour;
 	}
 
 	if (_.options.isInput) {
@@ -856,7 +963,7 @@ JsDatePicker.prototype.bindInput = function() {
 JsDatePicker.prototype.prepareInputValue = function(value) {
 
 	var _ 		= this,
-		splitedAll = value.split(' - '),
+		splitedAll = value.split(' '),
 		splitedDate = splitedAll[0].split('/'),
 		change 	= false,
 		edit 	= false;
